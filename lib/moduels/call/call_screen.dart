@@ -17,7 +17,7 @@ class CallScreen extends StatelessWidget {
               child: ImageFiltered(
                 imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                 child: Image.asset(
-                  'assets/images/african-american-man-wearing-round-glasses-denim-shirt.jpg',
+                  'assets/images/bill-gates-wealthiest-person.jpg',
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   fit: BoxFit.cover,
@@ -35,7 +35,7 @@ class CallScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                         image: DecorationImage(
                           image: AssetImage(
-                              'assets/images/african-american-man-wearing-round-glasses-denim-shirt.jpg'),
+                              'assets/images/bill-gates-wealthiest-person.jpg'),
                           fit: BoxFit.cover,
                         )),
                   ),
