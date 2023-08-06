@@ -5,7 +5,11 @@ class CallSuccessState extends CallStates {}
 class CallStartState extends CallStates {}
 class CallEndState extends CallStates {}
 class CallRingingState extends CallStates {}
-class CallStartTimerState extends CallStates {}
+class CallStartTimerState extends CallStates {
+  final int seconds;
+  CallStartTimerState(this.seconds);
+}
+class CallEndTimerState extends CallStates {}
 
 
 

@@ -6,13 +6,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:zchat/layout/profile/profile_layout.dart';
+import 'package:zchat/models/user/user_model.dart';
 import 'package:zchat/moduels/chat/cubit/cubit.dart';
 import 'package:zchat/moduels/chat/cubit/states.dart';
 import 'package:zchat/shared/components/components.dart';
 import 'package:zchat/shared/styles/colors/colors.dart';
 
 class ChatScreen extends StatelessWidget {
-  ChatScreen({Key? key}) : super(key: key);
+  final UserModel? model;
+
+
+  ChatScreen({required this.model});
+
+
+  // ChatScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,102 @@ class ChatScreen extends StatelessWidget {
           var cubit = ChatCubit.get(context);
           return SafeArea(
             child: Scaffold(
-              appBar: appBarWidget(context),
+              appBar:  AppBar(
+                leadingWidth: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.12,
+                leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      size: 16,
+                      color: defaultColor,
+                    )),
+                actions: [
+                  PopupMenuButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(40),
+                        bottomRight: Radius.circular(40),
+                      ),
+                    ),
+                    itemBuilder: (BuildContext context) {
+                      return cubit.menu;
+                    },
+                    icon:SvgPicture.asset(
+                      'assets/icons/menu-call.svg',
+                      color: defaultColor,
+                      height: 19,
+                      width: 19,
+                    ) ,
+                    padding: EdgeInsets.all(8),
+
+                    color: defaultColor,
+
+                  ),
+                ],
+                backgroundColor: Colors.white,
+                titleSpacing: 0,
+                title: InkWell(
+                  onTap: () {
+                    navigateTo(context, ProfileLayout(model:model ));
+                  },
+                  child: Row(children: [
+                    Container(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.12,
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.07,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                            image: AssetImage('${model!.image}'),
+                            fit: BoxFit.cover,
+                          )
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${model!.name}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              letterSpacing: 1,
+                              fontFamily: 'Gilroy',
+                              fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(height: 3,),
+                        Text(
+                          '${model!.isOnline == true?'Online':'Offline'}',
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .caption!
+                              .copyWith(
+                            fontSize: 15,
+                            color:model!.isOnline == true? defaultColor:Colors.grey,
+                            fontFamily: 'Gilroy',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]),
+                ),
+              ),
               body: SingleChildScrollView(
                 // physics: NeverScrollableScrollPhysics(),
                 child: Container(
@@ -273,132 +375,132 @@ class ChatScreen extends StatelessWidget {
         ),
       );
 
-  AppBar appBarWidget(context) =>
-      AppBar(
-        leadingWidth: MediaQuery
-            .of(context)
-            .size
-            .width * 0.12,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              size: 16,
-              color: defaultColor,
-            )),
-        actions: [
-
-          PopupMenuButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(10),
-                bottomLeft: Radius.circular(40),
-                bottomRight: Radius.circular(40),
-              ),
-            ),
-            itemBuilder: (BuildContext context) {
-                  return [
-                  PopupMenuItem(
-                  child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/call-svgrepo-com.svg',
-                      allowDrawingOutsideViewBox: true,height: 24,width: 24,
-                  color: Colors.white),title: 'Calls',
-                      color: Colors.white,weight: FontWeight.w600,fontSize:18),
-                  ),
-
-                    PopupMenuItem(
-                      child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/Delete.svg',
-                          allowDrawingOutsideViewBox: true,height: 24,width: 24,
-                          color: Colors.white),title: 'Delete chat history',
-                          color: Colors.white,weight: FontWeight.w600,fontSize:16 ),
-                    ),
-                    PopupMenuItem(
-                      child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/notification1.svg',
-                          allowDrawingOutsideViewBox: true,height: 24,width: 24,
-                          color: Colors.white),title: 'Mute notification',
-                          color: Colors.white,weight: FontWeight.w600,fontSize:18),
-                    ),
-                    PopupMenuItem(
-                      child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/Search.svg',
-                          allowDrawingOutsideViewBox: true,height: 24,width: 24,
-                          color: Colors.white),title: 'Search',
-                          color: Colors.white,weight: FontWeight.w600,fontSize:18),
-                    ),
-
-
-
-
-
-                  ];
-                      },
-            icon:SvgPicture.asset(
-              'assets/icons/menu-call.svg',
-              color: defaultColor,
-              height: 19,
-              width: 19,
-            ) ,
-
-  color: defaultColor,
-
-  ),
-        ],
-        backgroundColor: Colors.white,
-        titleSpacing: 0,
-        title: InkWell(
-          onTap: () {
-            navigateTo(context, ProfileLayout());
-          },
-          child: Row(children: [
-            Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.1,
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 0.1,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Rectangle24.png'),
-                    // fit: BoxFit.cover,
-                  )
-              ),
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Brother',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontFamily: 'Gilroy',
-                      fontWeight: FontWeight.w700),
-                ),
-                Text(
-                  'online',
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .caption!
-                      .copyWith(
-                    fontSize: 15,
-                    color: defaultColor,
-                    fontFamily: 'Gilroy',
-                  ),
-                ),
-              ],
-            ),
-          ]),
-        ),
-      );
+  // AppBar appBarWidget(model,context) =>
+  //     AppBar(
+  //       leadingWidth: MediaQuery
+  //           .of(context)
+  //           .size
+  //           .width * 0.12,
+  //       leading: IconButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //           },
+  //           icon: Icon(
+  //             Icons.arrow_back_ios,
+  //             size: 16,
+  //             color: defaultColor,
+  //           )),
+  //       actions: [
+  //
+  //         PopupMenuButton(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.only(
+  //               topLeft: Radius.circular(40),
+  //               topRight: Radius.circular(10),
+  //               bottomLeft: Radius.circular(40),
+  //               bottomRight: Radius.circular(40),
+  //             ),
+  //           ),
+  //           itemBuilder: (BuildContext context) {
+  //                 return [
+  //                 PopupMenuItem(
+  //                 child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/call-svgrepo-com.svg',
+  //                     allowDrawingOutsideViewBox: true,height: 24,width: 24,
+  //                 color: Colors.white),title: 'Calls',
+  //                     color: Colors.white,weight: FontWeight.w600,fontSize:18),
+  //                 ),
+  //
+  //                   PopupMenuItem(
+  //                     child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/Delete.svg',
+  //                         allowDrawingOutsideViewBox: true,height: 24,width: 24,
+  //                         color: Colors.white),title: 'Delete chat history',
+  //                         color: Colors.white,weight: FontWeight.w600,fontSize:16 ),
+  //                   ),
+  //                   PopupMenuItem(
+  //                     child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/notification1.svg',
+  //                         allowDrawingOutsideViewBox: true,height: 24,width: 24,
+  //                         color: Colors.white),title: 'Mute notification',
+  //                         color: Colors.white,weight: FontWeight.w600,fontSize:18),
+  //                   ),
+  //                   PopupMenuItem(
+  //                     child:  buildItemDrawer(icon:SvgPicture.asset('assets/icons/Search.svg',
+  //                         allowDrawingOutsideViewBox: true,height: 24,width: 24,
+  //                         color: Colors.white),title: 'Search',
+  //                         color: Colors.white,weight: FontWeight.w600,fontSize:18),
+  //                   ),
+  //
+  //
+  //
+  //
+  //
+  //                 ];
+  //                     },
+  //           icon:SvgPicture.asset(
+  //             'assets/icons/menu-call.svg',
+  //             color: defaultColor,
+  //             height: 19,
+  //             width: 19,
+  //           ) ,
+  //
+  // color: defaultColor,
+  //
+  // ),
+  //       ],
+  //       backgroundColor: Colors.white,
+  //       titleSpacing: 0,
+  //       title: InkWell(
+  //         onTap: () {
+  //           navigateTo(context, ProfileLayout());
+  //         },
+  //         child: Row(children: [
+  //           Container(
+  //             width: MediaQuery
+  //                 .of(context)
+  //                 .size
+  //                 .width * 0.1,
+  //             height: MediaQuery
+  //                 .of(context)
+  //                 .size
+  //                 .height * 0.1,
+  //             decoration: BoxDecoration(
+  //                 borderRadius: BorderRadius.circular(15),
+  //                 image: DecorationImage(
+  //                   image: AssetImage('${ChatCubit.get(context).model!.image}'),
+  //                   // fit: BoxFit.cover,
+  //                 )
+  //             ),
+  //           ),
+  //           SizedBox(
+  //             width: 15,
+  //           ),
+  //           Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 '${ChatCubit.get(context).model!.name}',
+  //                 style: TextStyle(
+  //                     color: Colors.black,
+  //                     fontSize: 17,
+  //                     fontFamily: 'Gilroy',
+  //                     fontWeight: FontWeight.w700),
+  //               ),
+  //               Text(
+  //                 '${ChatCubit.get(context).model!.isOnline}',
+  //                 style: Theme
+  //                     .of(context)
+  //                     .textTheme
+  //                     .caption!
+  //                     .copyWith(
+  //                   fontSize: 15,
+  //                   color:ChatCubit.get(context).model!.isOnline == true? defaultColor:Colors.grey,
+  //                   fontFamily: 'Gilroy',
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ]),
+  //       ),
+  //     );
 
   Widget buildMessage(message) =>
       Padding(

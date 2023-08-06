@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zchat/layout/home/cubit/cubit.dart';
+import 'package:zchat/layout/home/cubit/states.dart';
 import 'package:zchat/moduels/chat/chat_screen.dart';
 import 'package:zchat/shared/components/components.dart';
 
@@ -7,16 +10,16 @@ class ImportantChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = List<Widget>.generate(10, (i) => buildSlideChatItem(context, InkWell(onTap: ()=>navigateTo(context, ChatScreen()),child: buildImportantChatItem(context))));
+    var items = HomeCubit.get(context).listUser;
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: ListView.builder(
-            itemBuilder: (context, index) {
-              return items[index];
-            },
-            itemCount: items.length)
-
+    return BlocConsumer<HomeCubit, HomeStates>(
+      listener: (context, state) {
+        // TODO: implement listener
+      },
+      builder: (context, state) {
+        // var list = HomeCubit.get(context);
+        return importantChatBuilder(items, context);
+      },
     );
   }
 }

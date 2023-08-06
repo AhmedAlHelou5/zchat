@@ -7,12 +7,18 @@ import 'package:shaky_animated_listview/widgets/animated_listview.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:zchat/layout/profile/cubit/cubit.dart';
 import 'package:zchat/layout/profile/cubit/states.dart';
+import 'package:zchat/models/user/user_model.dart';
 import 'package:zchat/moduels/chat/chat_screen.dart';
 import 'package:zchat/shared/components/components.dart';
 import 'package:zchat/shared/styles/colors/colors.dart';
 
 class ProfileLayout extends StatelessWidget {
-  ProfileLayout({Key? key}) : super(key: key);
+ final UserModel? model;
+
+  ProfileLayout({required this.model, });
+
+
+
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -49,13 +55,13 @@ class ProfileLayout extends StatelessWidget {
                                   width:
                                       MediaQuery.of(context).size.width * 0.2,
                                   height: MediaQuery.of(context).size.height *
-                                      0.1,
+                                      0.08,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
-                                      image:const DecorationImage(
+                                      image: DecorationImage(
                                         image: AssetImage(
-                                            'assets/images/Rectangle24.png'),
-                                        // fit: BoxFit.cover,
+                                            '${model!.image}'),
+                                        fit: BoxFit.cover,
                                       )),
                                 ),
                                 const SizedBox(
@@ -68,8 +74,8 @@ class ProfileLayout extends StatelessWidget {
                                     Container(
                                       width:
                                           MediaQuery.of(context).size.width * 0.5,
-                                      child:const Text(
-                                        'Cameron Williamson ',
+                                      child: Text(
+                                        '${model!.name} ',
                                         maxLines: 2,
                                         style: TextStyle(
                                           fontSize: 18,
@@ -83,13 +89,13 @@ class ProfileLayout extends StatelessWidget {
                                     ),
                                     SizedBox(height: 8),
                                     Text(
-                                      'Online',
+                                      '${model!.isOnline == true?'Online':'Offline'}',
                                       style: Theme.of(context)
                                           .textTheme
                                           .caption!
                                           .copyWith(
                                               fontSize: 14,
-                                              color: defaultColor,
+                                              color:model!.isOnline == true? defaultColor:Colors.grey,
                                               letterSpacing: 1),
                                     ),
                                   ],
@@ -97,7 +103,7 @@ class ProfileLayout extends StatelessWidget {
                               const  Spacer(),
                                 InkWell(
                                   onTap: () {
-                                    navigateTo(context, ChatScreen());
+                                    navigateTo(context, ChatScreen(model: model,));
                                   },
                                   child: SvgPicture.asset(
                                     'assets/icons/message-call.svg',
@@ -112,7 +118,7 @@ class ProfileLayout extends StatelessWidget {
                                 )
                               ],
                             ),
-                            const    SizedBox(height: 20),
+                            const    SizedBox(height: 40),
                             Container(
                               margin: const EdgeInsets.only(left: 15),
                               child: const Text(
@@ -131,14 +137,15 @@ class ProfileLayout extends StatelessWidget {
                             Container(
                               margin:const EdgeInsets.only(left: 15),
                               child: Text(
-                                '(406) 555-0120',
+                                '${cubit.getFormattedPhoneNumber(model!.phone)}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption!
                                     .copyWith(
-                                      fontSize: 17,
+                                      fontSize: 16,
                                       color: Colors.black87,
                                     ),
+
                               ),
                             ),
                             const  SizedBox(height: 20),
@@ -201,10 +208,10 @@ class ProfileLayout extends StatelessWidget {
             size: 15,
           ),
         ),
-        const Align(
+         Align(
             alignment: Alignment.center,
             child: Text(
-              '@Camewwamson',
+              '@${model!.name}',
               style: TextStyle(
                 fontSize: 20,
                 fontFamily: 'Gilroy',

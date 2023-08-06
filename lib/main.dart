@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zchat/bloc_observer.dart';
+import 'package:zchat/layout/home/cubit/cubit.dart';
+import 'package:zchat/moduels/call/cubit/cubit.dart';
+import 'package:zchat/moduels/call_history/cubit/cubit.dart';
 import 'package:zchat/moduels/splash/splash_screen.dart';
 import 'package:zchat/shared/cubit/app_cubit.dart';
 import 'package:zchat/shared/cubit/app_states.dart';
@@ -34,27 +37,33 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-          create: (context) =>
-          AppCubit()
-            ..changeAppMode(fromShared: true),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+        create: (context) =>AppCubit()..changeAppMode(fromShared: true),),
+        BlocProvider(
+          create: (context) =>HomeCubit()..getUserData()),
+        BlocProvider(
+            create: (context) =>CallHistoryCubit()..getCallHistoryData()),
+        BlocProvider(
+            create: (context) =>CallCubit()),
+      ],
 
+        child: BlocConsumer<AppCubit, AppStates>(
+          listener: (context, state) {
+            // TODO: implement listener
+          },
+          builder: (context, state) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: ThemeMode.light,
+              home: SplashScreen(),
+            );
+          },
+        ),
 
-      child: BlocConsumer<AppCubit, AppStates>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
-        builder: (context, state) {
-          return MaterialApp(
-            title: 'Flutter Demo',
-            debugShowCheckedModeBanner: false,
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: ThemeMode.light,
-            home: SplashScreen(),
-          );
-        },
-      ),
     );
   }
 }

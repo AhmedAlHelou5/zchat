@@ -1,3 +1,4 @@
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,414 +6,590 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shaky_animated_listview/animators/grid_animator.dart';
 import 'package:shaky_animated_listview/widgets/animated_listview.dart';
+import 'package:zchat/moduels/all_chat/all_chat_screen.dart';
+import 'package:zchat/moduels/call/call_screen.dart';
 import 'package:zchat/moduels/call_history/call_history_screen.dart';
+import 'package:zchat/moduels/chat/chat_screen.dart';
+import 'package:zchat/moduels/improtant_chat/important_chat_screen.dart';
+import 'package:zchat/moduels/read_chat/read_chat_screen.dart';
 import 'package:zchat/moduels/settings/setting_screen.dart';
+import 'package:zchat/moduels/unread_chat/unread_chat_screen.dart';
 import 'package:zchat/shared/styles/colors/colors.dart';
 
+// Widget articleBuilder(list,context,{isSearch=false}) => ConditionalBuilder(
+//   condition: list.length > 0,
+//   builder: (context) => ListView.separated(
+//     physics: BouncingScrollPhysics(),
+//     itemBuilder: (context,index) => buildArticleItem(list[index],context),
+//     separatorBuilder: ( context,index) =>myDivider(),
+//     itemCount: list.length,
+//   ),
+//   fallback: (context) =>isSearch ? Container(): Center(child: CircularProgressIndicator()),
+// );
+Widget allChatBuilder(list,context,{isSearch=false})=>ConditionalBuilder(
+  condition: list.length > 0,
+  builder: ( context) =>ListView.separated(
+    physics: BouncingScrollPhysics(),
 
-Widget buildAllChatItem(context)=>Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Row(
-    children: [
-      Stack(
-          alignment: Alignment.bottomRight,
-          children:[
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              width: 82,
-              height: 72,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Rectangle2.png'),
-                    // fit: BoxFit.cover,
-                  )),
-            ),
+    itemBuilder: ( context,  index)=> buildAllChatItem(list[index],context),
+    separatorBuilder: ( context,  index)=> SizedBox(
+      height: 10,
+    ),
+    itemCount: list.length,
+  ),
+  fallback: (context) =>isSearch ? Container(): Center(child: CircularProgressIndicator()),
+);
+Widget importantChatBuilder(list,context,{isSearch=false})=>ConditionalBuilder(
+  condition: list.length > 0,
+  builder: (BuildContext context) =>ListView.separated(
+    physics: BouncingScrollPhysics(),
 
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 8,
-              child: CircleAvatar(
-                radius: 4,
-                backgroundColor: defaultColor,
+    itemBuilder: (BuildContext context, int index)=>buildImportantChatItem(list[index],context),
+    separatorBuilder: ( context,  index)=> SizedBox(
+      height: 10,
+    ),
+    itemCount: list.length,
+  ),
+  fallback: (context) =>isSearch ? Container(): Center(child: CircularProgressIndicator()),
+);
+Widget unreadChatBuilder(list,context,{isSearch=false})=>ConditionalBuilder(
+  condition: list.length > 0,
+  builder: (BuildContext context) =>ListView.separated(
+    physics: BouncingScrollPhysics(),
+
+    itemBuilder: (BuildContext context, int index)=>buildUnreadChatItem(list[index],context),
+    separatorBuilder: ( context,  index)=> SizedBox(
+      height: 10,
+    ),
+    itemCount: list.length,
+  ),
+  fallback: (context) =>isSearch ? Container(): Center(child: CircularProgressIndicator()),
+);
+Widget readChatBuilder(list,context,{isSearch=false})=>ConditionalBuilder(
+  condition: list.length > 0,
+  builder: (BuildContext context) =>ListView.separated(
+    physics: BouncingScrollPhysics(),
+
+    itemBuilder: (BuildContext context, int index)=>buildReadChatItem(list[index],context),
+    separatorBuilder: ( context,  index)=> SizedBox(
+      height: 10,
+    ),
+    itemCount: list.length,
+  ),
+  fallback: (context) =>isSearch ? Container(): Center(child: CircularProgressIndicator()),
+);
+
+Widget buildAllChatItem(model,context)=>InkWell(
+  onTap: () {
+    navigateTo(context, ChatScreen(model: model,));
+  },
+  child:   Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children: [
+        Stack(
+            alignment: Alignment.bottomRight,
+            children:[
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('${model.image}'),
+                      fit: BoxFit.cover,
+                    )),
               ),
-            )
+              if(model.isOnline== true)
 
-
-          ]
-      ),
-      SizedBox(
-        width: 10,
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          Text(
-            'Robert Fox',
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          Text(
-            'why did you do that?',
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(fontSize: 15, color: defaultColor),
-          ),
-        ],
-      ),
-
-      Spacer(),
-
-      Column(
-        children: [
-          Text('15:20',style: Theme.of(context).textTheme.caption!,),
-          SizedBox(
-            height: 5,
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: HexColor('2695EC'),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Text('2',
-                style: TextStyle(color: Colors.white)),
-          ),
-
-          // SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,)
-
-
-        ],
-      ),
-
-      SizedBox(width: 10,)
-
-    ],
-  ),
-);
-Widget buildImportantChatItem(context)=>Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Row(
-    children: [
-      Stack(
-        alignment: Alignment.bottomRight,
-        children:[
-          Container(
-          margin: EdgeInsets.only(left: 10),
-          width: 82,
-          height: 72,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: AssetImage('assets/images/Rectangle2.png'),
-                // fit: BoxFit.cover,
-              )),
-        ),
-
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 8,
-            child: CircleAvatar(
-              radius: 4,
-              backgroundColor: defaultColor,
-            ),
-          )
-
-
-        ]
-      ),
-      SizedBox(
-        width: 10,
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Robert Fox',
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          Text(
-            'why did you do that?',
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(fontSize: 15, color: defaultColor),
-          ),
-        ],
-      ),
-
-      Spacer(),
-
-      Column(
-        children: [
-          Text('15:20',style: Theme.of(context).textTheme.caption!,),
-          SizedBox(
-            height: 5,
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: HexColor('2695EC'),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Text('2',
-                style: TextStyle(color: Colors.white)),
-          ),
-
-          // SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,)
-
-
-        ],
-      ),
-
-      SizedBox(width: 10,)
-
-    ],
-  ),
-);
-Widget buildUnreadChatItem(context)=>Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Row(
-    children: [
-      Stack(
-          alignment: Alignment.bottomRight,
-          children:[
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              width: 82,
-              height: 72,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Rectangle2.png'),
-                    // fit: BoxFit.cover,
-                  )),
-            ),
-
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 8,
-              child: CircleAvatar(
-                radius: 4,
-                backgroundColor: defaultColor,
-              ),
-            )
-
-
-          ]
-      ),      SizedBox(
-        width: 10,
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Robert Fox',
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          Text(
-            'why did you do that?',
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(fontSize: 15, color: defaultColor),
-          ),
-        ],
-      ),
-
-      Spacer(),
-
-      Column(
-        children: [
-          Text('15:20',style: Theme.of(context).textTheme.caption!,),
-          SizedBox(
-            height: 5,
-          ),
-          // Container(
-          //   padding: const EdgeInsets.symmetric(
-          //       horizontal: 8, vertical: 4),
-          //   decoration: BoxDecoration(
-          //     color: HexColor('2695EC'),
-          //     borderRadius: BorderRadius.circular(12),
-          //   ),
-          //   child: const Text('2',
-          //       style: TextStyle(color: Colors.white)),
-          // ),
-
-          SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,color: Colors.grey,)
-
-
-        ],
-      ),
-
-      SizedBox(width: 10,)
-
-    ],
-  ),
-);
-Widget buildReadChatItem(context)=>Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Row(
-    children: [
-      Stack(
-          alignment: Alignment.bottomRight,
-          children:[
-            Container(
-              margin: EdgeInsets.only(left: 10),
-              width: 82,
-              height: 72,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/Rectangle2.png'),
-                    // fit: BoxFit.cover,
-                  )),
-            ),
-
-            CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 8,
-              child: CircleAvatar(
-                radius: 4,
-                backgroundColor: defaultColor,
-              ),
-            )
-
-
-          ]
-      ),
-      SizedBox(
-        width: 10,
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Robert Fox',
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          Text(
-            'why did you do that?',
-            style: Theme.of(context)
-                .textTheme
-                .caption!
-                .copyWith(fontSize: 15, color: defaultColor),
-          ),
-        ],
-      ),
-
-      Spacer(),
-
-      Column(
-        children: [
-          Text('15:20',style: Theme.of(context).textTheme.caption!,),
-          SizedBox(
-            height: 5,
-          ),
-          // Container(
-          //   padding: const EdgeInsets.symmetric(
-          //       horizontal: 8, vertical: 4),
-          //   decoration: BoxDecoration(
-          //     color: HexColor('2695EC'),
-          //     borderRadius: BorderRadius.circular(12),
-          //   ),
-          //   child: const Text('2',
-          //       style: TextStyle(color: Colors.white)),
-          // ),
-
-          SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,)
-
-
-        ],
-      ),
-
-      SizedBox(width: 10,)
-
-    ],
-  ),
-);
-Widget buildCallHistoryItem(context)=> Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Row(
-    children: [
-      Stack(alignment: Alignment.bottomRight, children: [
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          width: 72,
-          height: 72,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              image: DecorationImage(
-                image: AssetImage('assets/images/Rectangle2.png'),
-                // fit: BoxFit.cover,
-              )),
-        ),
-
-      ]),
-      SizedBox(
-        width: 15,
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Robert Fox',
-            style: TextStyle(
-                fontSize: 23,
-                color: Colors.black,
-                fontFamily: 'Gilroy',
-                fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 7,
-          ),
-          Row(
-            children: [
-
-              // Icon(Icons.call_made_outlined, color: defaultColor,size: 18),
-
-              SvgPicture.asset('assets/icons/call-down.svg',height: 24,width: 24,),
-
-              Text(
-                '18.20.2022 at 19:30',
-                style: Theme.of(context).textTheme.caption!.copyWith(
-                  fontSize: 15,
-                  fontFamily: 'Gilroy',
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 8,
+                child: CircleAvatar(
+                  radius: 4,
+                  backgroundColor: defaultColor,
                 ),
-              ),
-            ],
-          ),
-        ],
-      ), Spacer(),
+              )
 
-    ],
+
+            ]
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            Text(
+              '${model.name}',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 7,
+            ),
+            Text(
+              '${model.lastMessage}',
+              style: Theme.of(context)
+                  .textTheme
+                  .caption!
+                  .copyWith(fontSize: 15, color: defaultColor),
+            ),
+          ],
+        ),
+
+        Spacer(),
+
+        Column(
+          children: [
+            Text('${model.lastMessageTime}',style: Theme.of(context).textTheme.caption!,),
+            SizedBox(
+              height: 5,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: HexColor('2695EC'),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child:  Text('${model.unreadMessage}',
+                  style: TextStyle(color: Colors.white)),
+            ),
+
+            // SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,)
+
+
+          ],
+        ),
+
+        SizedBox(width: 10,)
+
+      ],
+    ),
+  ),
+);
+Widget buildImportantChatItem(model,context)=>InkWell(
+  onTap: (){
+    navigateTo(context, ChatScreen(model: model,));
+  },
+  child:   Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children: [
+        Stack(
+          alignment: Alignment.bottomRight,
+          children:[
+            Container(
+              margin: EdgeInsets.only(left: 10),
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: AssetImage('${model.image}'),
+                    fit: BoxFit.cover,
+                  )),
+            ),
+            if(model.isOnline== true)
+
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: 8,
+                child: CircleAvatar(
+                  radius: 4,
+                  backgroundColor: defaultColor,
+                ),
+              )
+
+
+          ]
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${model.name}',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 7,
+            ),
+            Text(
+              '${model.lastMessage}',
+              style: Theme.of(context)
+                  .textTheme
+                  .caption!
+                  .copyWith(fontSize: 15, color: defaultColor),
+            ),
+          ],
+        ),
+
+        Spacer(),
+
+        Column(
+          children: [
+            Text('${model.lastMessageTime}',style: Theme.of(context).textTheme.caption!,),
+            SizedBox(
+              height: 5,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: HexColor('2695EC'),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child:  Text('${model.unreadMessage}',
+                  style: TextStyle(color: Colors.white)),
+            ),
+
+            // SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,)
+
+
+          ],
+        ),
+
+        SizedBox(width: 10,)
+
+      ],
+    ),
+  ),
+);
+Widget buildUnreadChatItem(model,context)=>InkWell(
+  onTap: (){
+    navigateTo(context, ChatScreen(model: model,));
+  },
+  child:   Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children: [
+        Stack(
+            alignment: Alignment.bottomRight,
+            children:[
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('${model.image}'),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              if(model.isOnline== true)
+
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 8,
+                  child: CircleAvatar(
+                    radius: 4,
+                    backgroundColor: defaultColor,
+                  ),
+                )
+
+
+            ]
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${model.name}',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 7,
+            ),
+            Text(
+              '${model.lastMessage}',
+              style: Theme.of(context)
+                  .textTheme
+                  .caption!
+                  .copyWith(fontSize: 15, color: defaultColor),
+            ),
+          ],
+        ),
+
+        Spacer(),
+
+        Column(
+          children: [
+            Text('${model.lastMessageTime}',style: Theme.of(context).textTheme.caption!,),
+            SizedBox(
+              height: 5,
+            ),
+            // Container(
+            //   padding: const EdgeInsets.symmetric(
+            //       horizontal: 8, vertical: 4),
+            //   decoration: BoxDecoration(
+            //     color: HexColor('2695EC'),
+            //     borderRadius: BorderRadius.circular(12),
+            //   ),
+            //   child: const Text('2',
+            //       style: TextStyle(color: Colors.white)),
+            // ),
+
+            SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,color: Colors.grey,)
+
+
+          ],
+        ),
+
+        SizedBox(width: 10,)
+
+      ],
+    ),
+  ),
+);
+Widget buildReadChatItem(model,context)=>InkWell(
+  onTap: (){
+    navigateTo(context, ChatScreen(model: model,));
+  },
+  child:   Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Row(
+      children: [
+        Stack(
+            alignment: Alignment.bottomRight,
+            children:[
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: AssetImage('${model.image}'),
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              if(model.isOnline== true)
+
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 8,
+                  child: CircleAvatar(
+                    radius: 4,
+                    backgroundColor: defaultColor,
+                  ),
+                )
+
+
+            ]
+        ),
+        SizedBox(
+          width: 15,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${model.name}',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 7,
+            ),
+            Text(
+              '${model.lastMessage}',
+              style: Theme.of(context)
+                  .textTheme
+                  .caption!
+                  .copyWith(fontSize: 15, color: defaultColor),
+            ),
+          ],
+        ),
+
+        Spacer(),
+
+        Column(
+          children: [
+            Text('${model.lastMessageTime}',style: Theme.of(context).textTheme.caption!,),
+            SizedBox(
+              height: 5,
+            ),
+            // Container(
+            //   padding: const EdgeInsets.symmetric(
+            //       horizontal: 8, vertical: 4),
+            //   decoration: BoxDecoration(
+            //     color: HexColor('2695EC'),
+            //     borderRadius: BorderRadius.circular(12),
+            //   ),
+            //   child: const Text('2',
+            //       style: TextStyle(color: Colors.white)),
+            // ),
+
+            SvgPicture.asset('assets/icons/mark_read.svg',height: 19,width: 19,)
+
+
+          ],
+        ),
+
+        SizedBox(width: 10,)
+
+      ],
+    ),
+  ),
+);
+
+
+
+
+
+Widget callHistoryBuilder(list,context)=>ConditionalBuilder(
+  condition: list.length > 0,
+  builder: (BuildContext context) =>ListView.separated(
+    physics: BouncingScrollPhysics(),
+
+    itemBuilder: (BuildContext context, int index)=>buildCallHistoryItem(list[index],context),
+    separatorBuilder: ( context,  index)=> SizedBox(
+      height: 10,
+    ),
+    itemCount: list.length,
+  ),
+  fallback: (context) => Center(child: CircularProgressIndicator()),
+);
+
+
+Widget buildCallHistoryItem(model,context)=> InkWell(
+  onTap: (){
+    navigateTo(context, CallScreen(model: model,));
+  },
+  child:   Padding(
+
+    padding: const EdgeInsets.all(8.0),
+
+    child: Row(
+
+      children: [
+
+        Stack(alignment: Alignment.bottomRight, children: [
+
+          Container(
+
+            margin: EdgeInsets.only(left: 10),
+
+            width: 72,
+
+            height: 72,
+
+            decoration: BoxDecoration(
+
+                borderRadius: BorderRadius.circular(10),
+
+                image: DecorationImage(
+
+                  image: AssetImage('${model.image}'),
+
+                  fit: BoxFit.cover,
+
+                )),
+
+          ),
+
+
+
+        ]),
+
+        SizedBox(
+
+          width: 15,
+
+        ),
+
+        Column(
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+
+            Text(
+
+              '${model.name}',
+
+              style: TextStyle(
+
+                  fontSize: 23,
+
+                  color: Colors.black,
+
+                  fontFamily: 'Gilroy',
+
+                  fontWeight: FontWeight.bold),
+
+            ),
+
+            SizedBox(
+
+              height: 7,
+
+            ),
+
+            Row(
+
+              children: [
+
+
+
+                // Icon(Icons.call_made_outlined, color: defaultColor,size: 18),
+
+
+                if(model.isReceived== true)
+                SvgPicture.asset('assets/icons/call-down.svg',height: 24,width: 24,),
+                if(model.isReceived== false)
+                Container(margin: EdgeInsets.only(right: 5) ,child: SvgPicture.asset('assets/icons/diagonal-arrow-right-up-svgrepo-com.svg',color: defaultColor,height: 20,width: 20,)),
+
+
+
+                  Text(
+
+                  '${model.lastCallTime}',
+
+                  style: Theme.of(context).textTheme.caption!.copyWith(
+
+                    fontSize: 15,
+
+                    fontFamily: 'Gilroy',
+
+                  ),
+
+                ),
+
+              ],
+
+            ),
+
+          ],
+
+        ), Spacer(),
+
+
+
+      ],
+
+    ),
+
   ),
 );
 Widget buildBottomSheetAttachFile(context)=>Container(
@@ -591,8 +768,6 @@ List<String> DarwerString = [
   'Invite Friends',
   'Telegram FAQ',
 ];
-
-
 // Widget buildGirdViewImageProfileLayout(context)=>  GridView.count(
 //     crossAxisCount: 3,
 //     // shrinkWrap: true,
@@ -755,9 +930,6 @@ List<String> DarwerString = [
 //         )
 //     )) ;
 //
-
-
-
 Widget buildHomeDrawer(context)=>Drawer(
   width: MediaQuery.of(context).size.width * 0.78,
   shape: RoundedRectangleBorder(
@@ -907,6 +1079,7 @@ Widget defaultFormField({
   required IconData? prefix,
   IconData? suffix,
   VoidCallback? suffixPresed,
+  int? length,
   onSubmit,
   onTap,
   onChange,
@@ -921,6 +1094,7 @@ Widget defaultFormField({
   validator: validate,
   enabled: isClickable,
   onTap: onTap,
+  maxLength: length,
   decoration:  InputDecoration(
     labelText: label,
     suffixIcon: suffix != null ? IconButton(icon: Icon(suffix), onPressed: suffixPresed,):null,
